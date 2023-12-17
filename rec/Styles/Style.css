@@ -1,0 +1,149 @@
+/* style.css */
+
+@font-face {
+    font-family: 'Poppins';
+    src: url(:/Fonts/Poppins-Regular.ttf);
+}
+#SignUp {
+    background-color: #212529;
+    font-size: 20px;
+}
+#fatherwidget {
+    max-width:1100px;
+    background-color: #2B3034;
+    border-radius: 24px;
+}
+#formwidget {
+    background-color: #212529;
+    border-radius: 24px;
+}
+#titleFormlabel {
+    background-color: transparent;
+    font-size: 24px;
+    color: #FFB703;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* pushButton styles */
+
+QPushButton {
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+    border-radius: 8px ;
+    background-color: #FFB703;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+
+}
+QPushButton:hover {
+    background-color: #FFA703;
+}
+#nextpushButton {
+    image: url(:/rec/Icons/right-arrow.png);
+}
+#previouspushButton {
+    image: url(:/rec/Icons/arrow.png);
+}
+#soundpushButton {
+    image: url(:/rec/Icons/volume.png);
+}
+#darkmodepushButton {
+    image: url(:/rec/Icons/night-mode.png);
+}
+#hidepasswordpushButton {
+    image: url(:/rec/Icons/view.png);
+}
+
+/* pushButton styles */
+
+/* lineEdit styles */
+
+QLineEdit {
+    outline: none;
+    background-color: #2B3034;
+    border: 2px solid #2B3034;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    min-height: 32px;
+    color: white;
+}
+QLineEdit:hover {
+    background-color: #272B2F;
+}
+QLineEdit:focus {
+    border: 2px solid #FFB703;
+    background-color: #272B2F;
+}
+
+/* lineEdit styles */
+
+/* label styles */
+
+QLabel {
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 8px ;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+}
+#usernameIconlabel {
+    image: url(:/rec/Icons/user.png);
+}
+#passwordIconlabel {
+    image: url(:/rec/Icons/padlock.png);
+}
+#emailIconlabel {
+    image: url(:/rec/Icons/email.png);
+}
+#phonenumberIconlabel {
+    image: url(:/rec/Icons/phone-call.png);
+}
+#bankassetIconlabel {
+    image: url(:/rec/Icons/money.png);
+}
+#capchaIconlabel {
+    image: url(:/rec/Icons/secure.png);
+}
+#capchaimagelabel {
+    background-color: #2B3034;
+    border-radius: 8px;
+}
+
+/* label styles */
+
+/* combobox styles */
+
+QComboBox {
+    height: 40px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    background-color: #2B3034;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 16px;
+}
+QComboBox:hover , QComboBox:on {
+    background-color: #272B2F;
+}
+QComboBox::drop-down {
+    padding: 8px;
+    border-radius: 8px;
+    subcontrol-position: center right;
+    margin-right: 8px;
+    image: url(:/rec/Icons/arrow-down.png);
+    background-color: #FFB703;
+}
+QComboBox QListView {
+    background-color: #2B3034;
+    border-radius: 8px;
+    color: white;
+    padding: 8px;
+    outline: 0;
+    border: 2px solid #FFB703;
+    selection-background-color: #FFB703;
+}
+
+/* combobox styles */

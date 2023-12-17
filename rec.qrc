@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>rec/Styles/Style.css</file>
+        <file>rec/Fonts/Poppins-Regular.ttf</file>
+        <file>rec/Icons/arrow.png</file>
+        <file>rec/Icons/light-mode.png</file>
+        <file>rec/Icons/mute.png</file>
+        <file>rec/Icons/night-mode.png</file>
+        <file>rec/Icons/right-arrow.png</file>
+        <file>rec/Icons/volume.png</file>
+        <file>rec/Icons/user.png</file>
+        <file>rec/Icons/email.png</file>
+        <file>rec/Icons/padlock.png</file>
+        <file>rec/Icons/phone-call.png</file>
+        <file>rec/Icons/money.png</file>
+        <file>rec/Icons/secure.png</file>
+        <file>rec/Icons/flags/australia.png</file>
+        <file>rec/Icons/flags/brazil.png</file>
+        <file>rec/Icons/flags/france.png</file>
+        <file>rec/Icons/flags/germany.png</file>
+        <file>rec/Icons/flags/india.png</file>
+        <file>rec/Icons/flags/mexico.png</file>
+        <file>rec/Icons/flags/russia.png</file>
+        <file>rec/Icons/flags/turkey.png</file>
+        <file>rec/Icons/flags/united-states.png</file>
+        <file>rec/Icons/arrow-down.png</file>
+        <file>rec/Icons/hidden.png</file>
+        <file>rec/Icons/view.png</file>
+        <file>rec/Icons/flags/iran.png</file>
+    </qresource>
+</RCC>
