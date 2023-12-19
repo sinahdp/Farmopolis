@@ -384,6 +384,20 @@
                        </item>
                       </layout>
                      </item>
+                     <item row="8" column="3" colspan="2">
+                      <widget class="QLineEdit" name="capchalineEdit">
+                       <property name="placeholderText">
+                        <string>Enter Capcha</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="9" column="2" colspan="3">
+                      <widget class="QPushButton" name="generatecapchapushButton">
+                       <property name="text">
+                        <string>generate</string>
+                       </property>
+                      </widget>
+                     </item>
                      <item row="8" column="1" rowspan="2">
                       <widget class="QLabel" name="capchaimagelabel">
                        <property name="text">
@@ -403,20 +417,6 @@
                         </size>
                        </property>
                       </spacer>
-                     </item>
-                     <item row="8" column="3" colspan="2">
-                      <widget class="QLineEdit" name="capchalineEdit">
-                       <property name="placeholderText">
-                        <string>Enter Capcha</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="9" column="2" colspan="3">
-                      <widget class="QPushButton" name="generatecapchapushButton">
-                       <property name="text">
-                        <string>generate</string>
-                       </property>
-                      </widget>
                      </item>
                     </layout>
                    </item>

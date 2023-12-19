@@ -15,10 +15,19 @@ public:
     SignUp(QWidget *parent = nullptr);
     ~SignUp();
 
+    //fade animation
+    void fadeAnimation() ;
+    void emptyTheForm() ;
+    void settingFormNumber() ;
+
 private slots:
+
     void on_nextpushButton_clicked();
 
+    void on_previouspushButton_clicked();
+
     void on_boxpushButton_clicked();
+
 
 private:
     Ui::SignUp *ui;
