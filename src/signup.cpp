@@ -1,6 +1,12 @@
 #include "signup.h"
 #include "ui_signup.h"
 
+#include <QWidget>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include <QFile>
 #include <QTextStream>
 #include "QString"
@@ -9,6 +15,12 @@
 #include <QIcon>
 #include <QPixmap>
 
+//animation
+
+#include <QPropertyAnimation>
+#include <QGraphicsOpacityEffect>
+
+//animation
 SignUp::SignUp(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SignUp)
@@ -34,6 +46,10 @@ SignUp::SignUp(QWidget *parent)
     ui->bankassetErrorlabel->hide() ;
     ui->capchaErrorlabel->hide() ;
 
+    //visiblity control
+    ui->boxwidget->setVisible(true);
+    ui->formAndSettingwidget->setVisible(false) ;
+
     //add combobox items
     ui->selectcountrycomboBox->addItem(QIcon(":/rec/Icons/flags/australia.png"), "Australia (+61)");
     ui->selectcountrycomboBox->addItem(QIcon(":/rec/Icons/flags/brazil.png"), "Brazil (+55)");
@@ -45,10 +61,25 @@ SignUp::SignUp(QWidget *parent)
     ui->selectcountrycomboBox->addItem(QIcon(":/rec/Icons/flags/russia.png"), "Russia (+7)");
     ui->selectcountrycomboBox->addItem(QIcon(":/rec/Icons/flags/turkey.png"), "Turkey (+90)");
     ui->selectcountrycomboBox->addItem(QIcon(":/rec/Icons/flags/united-states.png"), "United States (+1)");
+
+    // setting the initial condition for the number of managers
+    ui->boxlineEdit->setInputMask("D00000");
 }
 
 SignUp::~SignUp()
 {
     delete ui;
+}
+
+
+void SignUp::on_nextpushButton_clicked()
+{
+
+}
+
+void SignUp::on_boxpushButton_clicked()
+{
+    ui->boxwidget->setVisible(false);
+    ui->formAndSettingwidget->setVisible(true);
 }
 

@@ -13,6 +13,24 @@
     background-color: #2B3034;
     border-radius: 24px;
 }
+#boxwidget {
+    background-color: #212529;
+    border-radius: 16px;
+    max-width: 350px;
+    max-height: 160px;
+    padding: 16px;
+}
+#boxlabel {
+    font-size: 20px;
+    color: white;
+    background-color: #2B3034;
+    padding-left: 8px;
+}
+#boxIconlabel {
+    padding: 8px;
+    background-color: #FFB703;
+    image: url(:/rec/Icons/management.png);
+}
 #formwidget {
     background-color: #212529;
     border-radius: 24px;

@@ -27,5 +27,6 @@
         <file>rec/Icons/hidden.png</file>
         <file>rec/Icons/view.png</file>
         <file>rec/Icons/flags/iran.png</file>
+        <file>rec/Icons/management.png</file>
     </qresource>
 </RCC>
