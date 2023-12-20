@@ -72,7 +72,9 @@ QPushButton:hover {
 #hidepasswordpushButton {
     image: url(:/rec/Icons/view.png);
 }
-
+#generatecapchapushButton {
+    image: url(:/rec/Icons/reload.png);
+}
 /* pushButton styles */
 
 /* lineEdit styles */
@@ -106,7 +108,16 @@ QLabel {
     border-radius: 8px ;
     font-family: 'Poppins', sans-serif;
     font-size: 20px;
+    color:white;
 }
+#userpassErrorlabel , #emailErrorlabel , #passwordErrorlabel , #bankassetErrorlabel , #capchaErrorlabel {
+    background-color: #DC3545;
+    color: white;
+    padding: 4px 8px 4px 8px;
+    border-radius: 0px;
+    font-size: 16px;
+}
+/* icons label*/
 #usernameIconlabel {
     image: url(:/rec/Icons/user.png);
 }
@@ -128,6 +139,10 @@ QLabel {
 #capchaimagelabel {
     background-color: #2B3034;
     border-radius: 8px;
+    color: white;
+    font-size:20px;
+    border: 2px dashed #FFB703;
+    padding-left: 8px;
 }
 
 /* label styles */

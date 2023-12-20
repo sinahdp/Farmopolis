@@ -11,6 +11,13 @@
 #include <QTextStream>
 #include "QString"
 
+//capcha
+#include <QRandomGenerator>
+#include <QPainter>
+#include <QFont>
+#include <QTime>
+#include <QImage>
+
 #include <QStyle>
 #include <QIcon>
 #include <QPixmap>
@@ -24,6 +31,9 @@
 
 int currentIndexForm = 1 ;
 int sigupPageNumber ;
+
+//check field
+int checkFieldCapcha = 0 ;
 SignUp::SignUp(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::SignUp)
@@ -68,13 +78,25 @@ SignUp::SignUp(QWidget *parent)
     // setting the initial condition for the number of managers
     ui->boxlineEdit->setInputMask("D00000");
 
+    //genarate capcha first time
+    generateCaptcha(ui->capchaimagelabel) ;
 }
 
-
-//slider
-
-
-//slider
+//change eyeimage and password mode
+void SignUp::on_hidepasswordpushButton_clicked()
+{
+    static int check = 1 ;
+    if(check){
+        ui->hidepasswordpushButton->setStyleSheet("image: url(:/rec/Icons/view.png);") ;
+        ui->passlineEdit->setEchoMode(QLineEdit::Normal) ;
+        check = 0 ;
+    }
+    else{
+        ui->hidepasswordpushButton->setStyleSheet("image: url(:/rec/Icons/hidden.png);") ;
+        ui->passlineEdit->setEchoMode(QLineEdit::Password) ;
+        check = 1 ;
+    }
+}
 
 SignUp::~SignUp()
 {
@@ -127,7 +149,6 @@ void SignUp::on_boxpushButton_clicked()
 
 void SignUp::on_nextpushButton_clicked()
 {
-
     if(currentIndexForm < sigupPageNumber) {
         currentIndexForm++ ;
         settingFormNumber() ;
@@ -143,5 +164,53 @@ void SignUp::on_previouspushButton_clicked()
         fadeAnimation() ;
         emptyTheForm() ;
     }
+}
+
+
+// genarate capcha
+void SignUp::generateCaptcha(QLabel *captchaLabel)
+{
+    QString captchaText;
+    const QString characters = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789";
+    for (int i = 0; i < 6; ++i) {
+        captchaText += characters.at(QRandomGenerator::global()->bounded(characters.length()));
+    }
+
+    QPixmap pixmap(100, 30);
+    pixmap.fill(Qt::lightGray);
+    captchaLabel->setPixmap(pixmap);
+    captchaLabel->setText(captchaText);
+}
+
+void SignUp::checkCaptcha(QLineEdit *captchaEntry, QLabel *captchaLabel, QLabel *erorLable, int &check)
+{
+    QString userInput = captchaEntry->text();
+    QString captchaText = captchaLabel->text();
+
+    if (userInput != captchaText) {
+        erorLable->setText("The securety field is note correct") ;
+        erorLable->show() ;
+        captchaEntry->setStyleSheet("border: 2px solid #DC3545;") ;
+        check = 0 ;
+    }
+    else {
+        captchaEntry->setStyleSheet("border: 2px solid #80B918;") ;
+        erorLable->hide() ;
+        check = 1 ;
+    }
+}
+void SignUp::on_generatecapchapushButton_clicked() {
+    generateCaptcha(ui->capchaimagelabel) ;
+}
+
+void SignUp::on_submitAndNextpushButton_clicked()
+{
+    checkCaptcha(ui->capchalineEdit ,ui->capchaimagelabel ,ui->capchaErrorlabel , checkFieldCapcha) ;
+}
+
+
+void SignUp::on_darkmodepushButton_clicked()
+{
+
 }
 

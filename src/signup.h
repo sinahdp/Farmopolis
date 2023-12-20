@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+#include <QLabel>
+#include <QLineEdit>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class SignUp; }
 QT_END_NAMESPACE
@@ -20,6 +23,15 @@ public:
     void emptyTheForm() ;
     void settingFormNumber() ;
 
+    //
+    bool checlen(QString str) ;
+
+    bool checkbadstr(QString str) ;
+
+    void generateCaptcha(QLabel *captchaLabel) ;
+
+    void checkCaptcha(QLineEdit *captchaEntry , QLabel *captchaLabel , QLabel *erorLable , int& check) ;
+
 private slots:
 
     void on_nextpushButton_clicked();
@@ -28,6 +40,14 @@ private slots:
 
     void on_boxpushButton_clicked();
 
+
+    void on_hidepasswordpushButton_clicked();
+
+    void on_generatecapchapushButton_clicked();
+
+    void on_submitAndNextpushButton_clicked();
+
+    void on_darkmodepushButton_clicked();
 
 private:
     Ui::SignUp *ui;
