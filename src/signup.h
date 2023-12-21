@@ -34,7 +34,7 @@ public:
 
     void generateCaptcha(QLabel *captchaLabel) ;
 
-    void checkCaptcha(QLineEdit *captchaEntry , QLabel *captchaLabel , QLabel *erorLable , int& check) ;
+    void checkCaptcha(QLineEdit *captchaEntry , QLabel *captchaLabel , QLabel *erorLable) ;
 
 
 private slots:
@@ -51,8 +51,6 @@ private slots:
     void on_generatecapchapushButton_clicked();
 
     void on_submitAndNextpushButton_clicked();
-
-    void on_darkmodepushButton_clicked();
 
     void on_passlineEdit_textChanged(const QString &arg1);
 

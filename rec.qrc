@@ -29,5 +29,6 @@
         <file>rec/Icons/flags/iran.png</file>
         <file>rec/Icons/management.png</file>
         <file>rec/Icons/reload.png</file>
+        <file>rec/Database/Farmopolis.db</file>
     </qresource>
 </RCC>

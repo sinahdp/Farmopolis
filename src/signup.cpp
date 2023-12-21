@@ -15,6 +15,12 @@
 #include <QTextStream>
 #include "QString"
 
+//database
+#include <QSqlDatabase>
+#include "QSqlDriver"
+#include "QSqlQuery"
+#include "QSqlQueryModel"
+
 //capcha
 #include <QRandomGenerator>
 #include <QPainter>
@@ -27,14 +33,19 @@
 #include <QPixmap>
 
 //animation
-
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 
-//animation
-
 int currentIndexForm = 1 ;
-int signupPageNumber ;
+int signupPageNumber = 1 ;
+
+//check field variables
+bool checkFielduser = 1 ;
+bool checkFieldpass = 1 ;
+bool checkFieldemail = 1 ;
+bool checkFieldphonenumber = 1 ;
+bool checkFieldbankasset = 1 ;
+bool checkFieldcapcha = 1 ;
 
 //check field
 int checkFieldCapcha = 0 ;
@@ -56,12 +67,20 @@ SignUp::SignUp(QWidget *parent)
         this->setStyleSheet(style);
     }
 
+    //database
+    QSqlDatabase database ;
+    database = QSqlDatabase::addDatabase("QSQLITE") ;
+    //database.setDatabaseName(":/rec/Database/Farmopolis.db");
+    database.setDatabaseName("E:/My Folders/Programming/Programming Exercises/Quera Exercises/QT/Farmopolis/rec/Database/Farmopolis.db");
+    database.open() ;
+
     //hide lables
     ui->userpassErrorlabel->hide() ;
     ui->emailErrorlabel->hide() ;
     ui->phonenumberErrorlabel->hide() ;
     ui->bankassetErrorlabel->hide() ;
     ui->capchaErrorlabel->hide() ;
+    ui->dataAndFinalchecklabel->hide() ;
 
     //visiblity control
     ui->boxwidget->setVisible(true);
@@ -91,7 +110,7 @@ SignUp::SignUp(QWidget *parent)
 
     //set enabel pushbutton
 
-    ui->boxpushButton->setEnabled(true) ;
+    ui->boxpushButton->setEnabled(false) ;
 
     //genarate capcha first time
     generateCaptcha(ui->capchaimagelabel) ;
@@ -149,13 +168,10 @@ void SignUp::emptyTheForm()
     ui->selectcountrycomboBox->setCurrentIndex(0);
 }
 
-void SignUp::settingFormNumber() {
-
+void SignUp::settingFormNumber()
+{
     ui->titleFormlabel->setText("SignUp " + QString::number(currentIndexForm)) ;
 }
-
-
-
 
 void SignUp::on_nextpushButton_clicked()
 {
@@ -166,6 +182,7 @@ void SignUp::on_nextpushButton_clicked()
         emptyTheForm() ;
     }
 }
+
 void SignUp::on_previouspushButton_clicked()
 {
     if(1 < currentIndexForm) {
@@ -176,8 +193,7 @@ void SignUp::on_previouspushButton_clicked()
     }
 }
 
-
-// genarate capcha
+//capcha functions
 void SignUp::generateCaptcha(QLabel *captchaLabel)
 {
     QString captchaText;
@@ -192,7 +208,7 @@ void SignUp::generateCaptcha(QLabel *captchaLabel)
     captchaLabel->setText(captchaText);
 }
 
-void SignUp::checkCaptcha(QLineEdit *captchaEntry, QLabel *captchaLabel, QLabel *erorLable, int &check)
+void SignUp::checkCaptcha(QLineEdit *captchaEntry, QLabel *captchaLabel, QLabel *erorLable)
 {
     QString userInput = captchaEntry->text();
     QString captchaText = captchaLabel->text();
@@ -201,26 +217,20 @@ void SignUp::checkCaptcha(QLineEdit *captchaEntry, QLabel *captchaLabel, QLabel 
         erorLable->setText("The securety field is note correct") ;
         erorLable->show() ;
         captchaEntry->setStyleSheet("border: 2px solid #DC3545;") ;
-        check = 0 ;
+        checkFieldcapcha = 1 ;
     }
     else {
         captchaEntry->setStyleSheet("border: 2px solid #80B918;") ;
         erorLable->hide() ;
-        check = 1 ;
+        checkFieldcapcha = 0 ;
     }
 }
+
 void SignUp::on_generatecapchapushButton_clicked() {
     generateCaptcha(ui->capchaimagelabel) ;
 }
 
-void SignUp::on_submitAndNextpushButton_clicked()
-{
-    checkCaptcha(ui->capchalineEdit ,ui->capchaimagelabel ,ui->capchaErrorlabel , checkFieldCapcha) ;
-}
-
 // check fields functions
-
-//check len
 bool SignUp::checlen(QString str)
 {
     int flag = 0 ;
@@ -230,7 +240,7 @@ bool SignUp::checlen(QString str)
     }
     return flag ;
 }
-//check badstr
+
 bool SignUp::checkbadstr(QString str)
 {
     char badstr[11] = "*+-/$)(#^%" ;
@@ -255,6 +265,7 @@ bool SignUp::endcheck(QString str) {
     return flag;
 }
 
+//empty fields function
 void SignUp::emptyFieldError(QLineEdit *lineEdit, QLabel *errorLabel)
 {
     errorLabel->setText("This field cannot be empty");
@@ -262,77 +273,113 @@ void SignUp::emptyFieldError(QLineEdit *lineEdit, QLabel *errorLabel)
     errorLabel->show();
 }
 
-void SignUp::on_darkmodepushButton_clicked()
+void SignUp::on_userlineEdit_textChanged(const QString &arg1)
 {
-
+    QString str = arg1 ;
+    if(str.isEmpty()) {
+        ui->userlineEdit->setStyleSheet("border: 2px solid #DC3545;") ;
+        ui->userpassErrorlabel->setText("Username cannot be empty") ;
+        ui->userpassErrorlabel->show();
+        checkFielduser = 1 ;
+    }
+    else {
+        checkFielduser = 0 ;
+        ui->userlineEdit->setStyleSheet("border: 2px solid #80B918;") ;
+        if(checkFieldpass == 0) {
+            ui->userpassErrorlabel->hide();
+        }
+    }
 }
-
 
 void SignUp::on_passlineEdit_textChanged(const QString &arg1)
 {
     QString pass = arg1 ;
-    int flag1 = 1 ;
-    int flag2 = 1 ;
-    if(checlen(pass)==1){
+    if(checlen(pass) == 1){
+        ui->passlineEdit->setStyleSheet("border : 2px solid #DC3545;") ;
         ui->userpassErrorlabel->setText("Password cannot be less than 7 letter") ;
-        ui->passlineEdit->setStyleSheet("border : 2px solid #DC3545;") ;
         ui->userpassErrorlabel->show() ;
-        flag1 = 0 ;
-        //signupCheck_fieldpass = 0 ;
+        checkFieldpass = 1 ;
     }
-    if(checkbadstr(pass)==1){
+    else if(checkbadstr(pass) == 1){
+        ui->passlineEdit->setStyleSheet("border : 2px solid #DC3545;") ;
         ui->userpassErrorlabel->setText("Password cannot contain [*+-/$)(#^%] characters") ;
-        ui->passlineEdit->setStyleSheet("border : 2px solid #DC3545;") ;
         ui->userpassErrorlabel->show() ;
-        flag2 = 0 ;
-        //signupCheck_fieldpass = 0 ;
+        checkFieldpass = 1 ;
     }
-    if(flag1==1 && flag2==1){
+    else {
+        checkFieldpass = 0 ;
         ui->passlineEdit->setStyleSheet("border : 2px solid #80B918;") ;
-        ui->userpassErrorlabel->hide() ;
-        //signupCheck_fieldpass = 1 ;
+        if(checkFielduser == 0){
+            ui->userpassErrorlabel->hide() ;
+        }
+        else {
+            ui->userlineEdit->setStyleSheet("border : 2px solid #DC3545;") ;
+            ui->userpassErrorlabel->setText("Username cannot be empty") ;
+        }
     }
 }
-
 
 void SignUp::on_emaillineEdit_textChanged(const QString &arg1)
 {
     QString email = arg1 ;
     if(endcheck(email)==0) {
-        ui->emailErrorlabel->setText("Your email must end with one of @gmail.com or @email.com or @mail.um.ac") ;
         ui->emaillineEdit->setStyleSheet("border : 2px solid #DC3545;") ;
+        ui->emailErrorlabel->setText("Your email must end with one of @gmail.com or @email.com or @mail.um.ac") ;
         ui->emailErrorlabel->show() ;
+        checkFieldemail = 1 ;
     }
     else if(checkbadstr(email)==1){
-        ui->emailErrorlabel->setText("Email cannot contain [*+-/$)(#^%] characters") ;
         ui->emaillineEdit->setStyleSheet("border : 2px solid #DC3545;") ;
+        ui->emailErrorlabel->setText("Email cannot contain [*+-/$)(#^%] characters") ;
         ui->emailErrorlabel->show() ;
-        //flag2 = 0 ;
-        //signupCheck_fieldpass = 0 ;
+        checkFieldemail = 1 ;
     }
     else {
         ui->emaillineEdit->setStyleSheet("border : 2px solid #80B918;") ;
         ui->emailErrorlabel->hide() ;
+        checkFieldemail = 0 ;
     }
 }
 
+void SignUp::on_phonenumberlineEdit_textChanged(const QString &arg1)
+{
+    QString str = arg1 ;
+    if(str.length() != 10) {
+        ui->phonenumberlineEdit->setStyleSheet("border: 2px solid #DC3545;");
+        ui->phonenumberErrorlabel->setText("The phone number must be 10 digits (without zero)");
+        ui->phonenumberErrorlabel->show();
+        checkFieldphonenumber = 1 ;
+    }
+    else {
+        ui->phonenumberlineEdit->setStyleSheet("border: 2px solid #80B918;");
+        ui->phonenumberErrorlabel->hide() ;
+        checkFieldphonenumber = 0 ;
+    }
+}
 
 void SignUp::on_bankassetlineEdit_textChanged(const QString &arg1)
 {
     QString bankAsset = arg1 ;
-
-    if (bankAsset == "0") {
-        ui->bankassetErrorlabel->setText("This field cannot be zero");
+    if(bankAsset.isEmpty()) {
         ui->bankassetlineEdit->setStyleSheet("border: 2px solid #DC3545;");
+        ui->bankassetErrorlabel->setText("Bank assets cannot be empty");
         ui->bankassetErrorlabel->show();
+        checkFieldbankasset = 1 ;
+    }
+    else if(bankAsset.toDouble() == 0) {
+        ui->bankassetlineEdit->setStyleSheet("border: 2px solid #DC3545;");
+        ui->bankassetErrorlabel->setText("Bank assets cannot be zero");
+        ui->bankassetErrorlabel->show();
+        checkFieldbankasset = 1 ;
     }
     else {
         ui->bankassetlineEdit->setStyleSheet("border: 2px solid #80B918;");
         ui->bankassetErrorlabel->hide();
+        checkFieldbankasset = 0 ;
     }
 }
 
-
+//box functions
 void SignUp::on_boxlineEdit_textChanged(const QString &arg1)
 {
     QString str = arg1 ;
@@ -345,38 +392,52 @@ void SignUp::on_boxlineEdit_textChanged(const QString &arg1)
         ui->boxpushButton->setEnabled(true) ;
     }
 }
+
 void SignUp::on_boxpushButton_clicked()
 {
     ui->boxwidget->setVisible(false);
     ui->formAndSettingwidget->setVisible(true);
 }
 
-void SignUp::on_phonenumberlineEdit_textChanged(const QString &arg1)
-{
-    QString str = arg1 ;
-    if(str.length() != 10) {
-        ui->phonenumberErrorlabel->setText("The phone number must be 10 digits (without zero)");
-        ui->phonenumberlineEdit->setStyleSheet("border: 2px solid #DC3545;");
-        ui->phonenumberErrorlabel->show();
+//submit and database
+void SignUp::on_submitAndNextpushButton_clicked() {
+
+    checkCaptcha(ui->capchalineEdit ,ui->capchaimagelabel ,ui->capchaErrorlabel) ;
+
+    int finalCheck = checkFielduser + checkFieldpass + checkFieldemail + checkFieldphonenumber + checkFieldbankasset + checkFieldcapcha ;
+
+    if (finalCheck == 0) {
+        QSqlQuery q;
+        QString username = ui->userlineEdit->text();
+        QString password = ui->passlineEdit->text();
+        QString email = ui->emaillineEdit->text();
+        QString country = ui->selectcountrycomboBox->currentText();
+        double phonenumber = ui->phonenumberlineEdit->text().toDouble();
+        double bankasset = ui->bankassetlineEdit->text().toDouble();
+
+        q.exec("SELECT username FROM Farmopolis WHERE username='" + username + "'");
+        if (q.first()) {
+            ui->dataAndFinalchecklabel->show();
+            ui->dataAndFinalchecklabel->setStyleSheet("background-color:#DC3545 ; color: white ;");
+            ui->dataAndFinalchecklabel->setText("This username exists in the game");
+        }
+        else {
+            q.prepare("INSERT INTO Managers (username, password, email, phonenumber, country, bankasset) VALUES (:username, :password, :email, :phonenumber, :country, :bankasset)");
+            q.bindValue(":username", username);
+            q.bindValue(":password", password);
+            q.bindValue(":email", email);
+            q.bindValue(":phonenumber", phonenumber);
+            q.bindValue(":country", country);
+            q.bindValue(":bankasset", bankasset);
+
+            ui->dataAndFinalchecklabel->show();
+            ui->dataAndFinalchecklabel->setText("Your information has been successfuly registered");
+            ui->dataAndFinalchecklabel->setStyleSheet("background-color:#80B918; color: white;");
+        }
     }
     else {
-        ui->phonenumberlineEdit->setStyleSheet("border: 2px solid #80B918;");
-        ui->phonenumberErrorlabel->hide() ;
+        ui->dataAndFinalchecklabel->show();
+        ui->dataAndFinalchecklabel->setText("Please complete the fields correctly");
+        ui->dataAndFinalchecklabel->setStyleSheet("background-color:#DC3545 ; color: white ;");
     }
 }
-
-
-void SignUp::on_userlineEdit_textChanged(const QString &arg1)
-{
-    QString str = arg1 ;
-    if(str.isEmpty()) {
-        ui->userpassErrorlabel->setText("Username cannot be empty") ;
-        ui->userlineEdit->setStyleSheet("border: 2px solid #DC3545;") ;
-        ui->userpassErrorlabel->show();
-    }
-    else {
-        ui->userlineEdit->setStyleSheet("border: 2px solid #80B918;") ;
-        ui->userpassErrorlabel->hide();
-    }
-}
-
