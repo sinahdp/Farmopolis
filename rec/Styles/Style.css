@@ -110,12 +110,13 @@ QLabel {
     font-size: 20px;
     color:white;
 }
-#userpassErrorlabel , #emailErrorlabel , #passwordErrorlabel , #bankassetErrorlabel , #capchaErrorlabel {
+#userpassErrorlabel , #emailErrorlabel , #passwordErrorlabel , #phonenumberErrorlabel , #bankassetErrorlabel , #capchaErrorlabel {
     background-color: #DC3545;
     color: white;
     padding: 4px 8px 4px 8px;
     border-radius: 0px;
     font-size: 16px;
+    border-radius: 3px;
 }
 /* icons label*/
 #usernameIconlabel {

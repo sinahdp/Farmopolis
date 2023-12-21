@@ -28,9 +28,14 @@ public:
 
     bool checkbadstr(QString str) ;
 
+    bool endcheck(QString str) ;
+
+    void emptyFieldError(QLineEdit *lineEdit, QLabel *errorLabel);
+
     void generateCaptcha(QLabel *captchaLabel) ;
 
     void checkCaptcha(QLineEdit *captchaEntry , QLabel *captchaLabel , QLabel *erorLable , int& check) ;
+
 
 private slots:
 
@@ -48,6 +53,18 @@ private slots:
     void on_submitAndNextpushButton_clicked();
 
     void on_darkmodepushButton_clicked();
+
+    void on_passlineEdit_textChanged(const QString &arg1);
+
+    void on_emaillineEdit_textChanged(const QString &arg1);
+
+    void on_bankassetlineEdit_textChanged(const QString &arg1);
+
+    void on_boxlineEdit_textChanged(const QString &arg1);
+
+    void on_phonenumberlineEdit_textChanged(const QString &arg1);
+
+    void on_userlineEdit_textChanged(const QString &arg1);
 
 private:
     Ui::SignUp *ui;
