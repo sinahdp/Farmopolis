@@ -60,6 +60,8 @@ private slots:
 
     void on_userlineEdit_textChanged(const QString &arg1);
 
+    void on_darkmodepushButton_clicked();
+
 private:
     Ui::SignUp *ui;
 };

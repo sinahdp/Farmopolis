@@ -457,3 +457,21 @@ void SignUp::on_submitAndNextpushButton_clicked() {
         ui->dataAndFinalchecklabel->setStyleSheet("background-color:#DC3545 ; color: white ;");
     }
 }
+
+void SignUp::on_darkmodepushButton_clicked()
+{
+    static int check = 1 ;
+    if(check){
+        check = 0 ;
+        ui->fatherwidget->setStyleSheet("#fatherwidget { background-color: #F8f9fa; }");
+        ui->formwidget->setStyleSheet("#formwidget { background-color: #ADB5BD; }");
+        ui->formAndSettingwidget->setStyleSheet("#formAndSettingwidget QLineEdit { background-color: #F8f9fa ; color: black ; border: 2px solid #ADB5BD}");
+    }
+    else {
+        check = 1 ;
+        ui->fatherwidget->setStyleSheet("#fatherwidget { background-color: #2B3034; }");
+        ui->formwidget->setStyleSheet("#formwidget { background-color: #212529; }");
+        ui->formAndSettingwidget->setStyleSheet("#formAndSettingwidget QLineEdit { background-color: #2B3034 ; color: white ; border: 2px solid #2B3034}");
+    }
+}
+
