@@ -83,19 +83,15 @@ SignUp::SignUp(QWidget *parent)
     //visiblity control
     ui->boxwidget->setVisible(true);
     ui->formAndSettingwidget->setVisible(false) ;
-
+    ui->welcomwidget->setVisible(false) ;
 
     QSqlQuery q;
-    q.prepare("SELECT firstRun FROM managers WHERE id = :id");
-    q.bindValue(":id", signupPageNumber);
-    if (q.exec()) {
-        if (q.next()) {
-            QString firstRun = q.value(0).toString();
-            if (firstRun == "true") {
-                ui->boxwidget->setVisible(false);
-                ui->formAndSettingwidget->setVisible(false) ;
-            }
-        }
+    QString check = "true" ;
+    q.exec("SELECT firstrun FROM managers WHERE firstrun = '"+check+"' ");
+    if(q.first()) {
+        ui->boxwidget->setVisible(false);
+        ui->formAndSettingwidget->setVisible(false) ;
+        ui->welcomwidget->setVisible(true) ;
     }
 
     //add combobox items
@@ -447,10 +443,11 @@ void SignUp::on_submitAndNextpushButton_clicked() {
                 generateCaptcha(ui->capchaimagelabel) ;
             }
             else {
-                QSqlQuery updateQuery;
-                updateQuery.prepare("UPDATE managers SET firstRun = :firstRun WHERE id = :id");
-                updateQuery.bindValue(":id", signupPageNumber);
-                updateQuery.bindValue(":firstRun", "true");
+                QSqlQuery q;
+                QString check = "true" ;
+                q.prepare("INSERT INTO managers (firstrun) VALUES (:check)");
+                q.bindValue(":firstrun", check);
+                q.exec();
             }
         }
     }

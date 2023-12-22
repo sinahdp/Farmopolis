@@ -109,6 +109,10 @@ QLabel {
     font-size: 20px;
     color:white;
 }
+#welcomlabel {
+    font-size: 32px;
+    color: #80B918;
+}
 #userpassErrorlabel , #emailErrorlabel , #passwordErrorlabel , #phonenumberErrorlabel , #bankassetErrorlabel , #capchaErrorlabel {
     background-color: #DC3545;
     color: white;
