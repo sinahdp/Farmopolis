@@ -29,6 +29,7 @@
         <file>rec/Icons/flags/iran.png</file>
         <file>rec/Icons/management.png</file>
         <file>rec/Icons/reload.png</file>
-        <file>rec/Database/Farmopolis.db</file>
+        <file>rec/Database/farmdata.db</file>
+        <file>rec/Music/backgroundMusic.mp3</file>
     </qresource>
 </RCC>

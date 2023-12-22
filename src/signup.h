@@ -6,6 +6,8 @@
 #include <QLabel>
 #include <QLineEdit>
 
+#include <QMediaPlayer>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class SignUp; }
 QT_END_NAMESPACE
@@ -21,16 +23,15 @@ public:
     //fade animation
     void fadeAnimation() ;
     void emptyTheForm() ;
-    void settingFormNumber() ;
+    void setFormNumber() ;
+    void hidelabels() ;
+    void hideBorderlineEdits() ;
 
-    //
     bool checlen(QString str) ;
 
     bool checkbadstr(QString str) ;
 
     bool endcheck(QString str) ;
-
-    void emptyFieldError(QLineEdit *lineEdit, QLabel *errorLabel);
 
     void generateCaptcha(QLabel *captchaLabel) ;
 
@@ -39,12 +40,7 @@ public:
 
 private slots:
 
-    void on_nextpushButton_clicked();
-
-    void on_previouspushButton_clicked();
-
     void on_boxpushButton_clicked();
-
 
     void on_hidepasswordpushButton_clicked();
 

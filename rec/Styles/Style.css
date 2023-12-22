@@ -93,8 +93,7 @@ QLineEdit {
 QLineEdit:hover {
     background-color: #272B2F;
 }
-QLineEdit:focus {
-    border: 2px solid #FFB703;
+QLineEdit:focus {  
     background-color: #272B2F;
 }
 

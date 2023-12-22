@@ -6,6 +6,10 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
+//music
+#include <QMediaPlayer>
+#include <QSettings>
+#include <QThread>
 
 #include <QRegExpValidator>
 #include <QIntValidator>
@@ -36,8 +40,8 @@
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 
-int currentIndexForm = 1 ;
 int signupPageNumber = 1 ;
+int lastCompletedForm = 1 ;
 
 //check field variables
 bool checkFielduser = 1 ;
@@ -70,21 +74,29 @@ SignUp::SignUp(QWidget *parent)
     //database
     QSqlDatabase database ;
     database = QSqlDatabase::addDatabase("QSQLITE") ;
-    //database.setDatabaseName(":/rec/Database/Farmopolis.db");
-    database.setDatabaseName("E:/My Folders/Programming/Programming Exercises/Quera Exercises/QT/Farmopolis/rec/Database/Farmopolis.db");
+    database.setDatabaseName("E:/My Folders/Programming/Programming Exercises/Quera Exercises/QT/Farmopolis/rec/Database/farmdata.db");
     database.open() ;
 
     //hide lables
-    ui->userpassErrorlabel->hide() ;
-    ui->emailErrorlabel->hide() ;
-    ui->phonenumberErrorlabel->hide() ;
-    ui->bankassetErrorlabel->hide() ;
-    ui->capchaErrorlabel->hide() ;
-    ui->dataAndFinalchecklabel->hide() ;
+    hidelabels() ;
 
     //visiblity control
     ui->boxwidget->setVisible(true);
     ui->formAndSettingwidget->setVisible(false) ;
+
+
+    QSqlQuery q;
+    q.prepare("SELECT firstRun FROM managers WHERE id = :id");
+    q.bindValue(":id", signupPageNumber);
+    if (q.exec()) {
+        if (q.next()) {
+            QString firstRun = q.value(0).toString();
+            if (firstRun == "true") {
+                ui->boxwidget->setVisible(false);
+                ui->formAndSettingwidget->setVisible(false) ;
+            }
+        }
+    }
 
     //add combobox items
     ui->selectcountrycomboBox->addItem(QIcon(":/rec/Icons/flags/australia.png"), "Australia (+61)");
@@ -99,7 +111,6 @@ SignUp::SignUp(QWidget *parent)
     ui->selectcountrycomboBox->addItem(QIcon(":/rec/Icons/flags/united-states.png"), "United States (+1)");
 
     // setting the initial condition for the fields
-
     QIntValidator* intValidator = new QIntValidator(this);
     ui->boxlineEdit->setValidator(intValidator);
     ui->bankassetlineEdit->setValidator(intValidator);
@@ -109,7 +120,6 @@ SignUp::SignUp(QWidget *parent)
     ui->phonenumberlineEdit->setValidator(phoneValidator);
 
     //set enabel pushbutton
-
     ui->boxpushButton->setEnabled(false) ;
 
     //genarate capcha first time
@@ -159,38 +169,37 @@ void SignUp::fadeAnimation()
 
 void SignUp::emptyTheForm()
 {
-    ui->userlineEdit->setText("") ;
-    ui->passlineEdit->setText("") ;
-    ui->emaillineEdit->setText("") ;
-    ui->phonenumberlineEdit->setText("") ;
-    ui->bankassetlineEdit->setText("") ;
-    ui->capchalineEdit->setText("") ;
+    ui->userlineEdit->clear() ;
+    ui->passlineEdit->clear() ;
+    ui->emaillineEdit->clear() ;
+    ui->phonenumberlineEdit->clear() ;
+    ui->bankassetlineEdit->clear() ;
+    ui->capchalineEdit->clear() ;
     ui->selectcountrycomboBox->setCurrentIndex(0);
 }
 
-void SignUp::settingFormNumber()
+void SignUp::setFormNumber()
 {
-    ui->titleFormlabel->setText("SignUp " + QString::number(currentIndexForm)) ;
+    ui->titleFormlabel->setText("Manager " + QString::number(lastCompletedForm)) ;
+}
+void SignUp::hidelabels()
+{
+    ui->userpassErrorlabel->hide() ;
+    ui->emailErrorlabel->hide() ;
+    ui->phonenumberErrorlabel->hide() ;
+    ui->bankassetErrorlabel->hide() ;
+    ui->capchaErrorlabel->hide() ;
+    ui->dataAndFinalchecklabel->hide() ;
 }
 
-void SignUp::on_nextpushButton_clicked()
+void SignUp::hideBorderlineEdits()
 {
-    if(currentIndexForm < signupPageNumber) {
-        currentIndexForm++ ;
-        settingFormNumber() ;
-        fadeAnimation() ;
-        emptyTheForm() ;
-    }
-}
-
-void SignUp::on_previouspushButton_clicked()
-{
-    if(1 < currentIndexForm) {
-        currentIndexForm-- ;
-        settingFormNumber() ;
-        fadeAnimation() ;
-        emptyTheForm() ;
-    }
+    ui->userlineEdit->setStyleSheet("border: 2px solid #2B3034;");
+    ui->passlineEdit->setStyleSheet("border: 2px solid #2B3034;");
+    ui->emaillineEdit->setStyleSheet("border: 2px solid #2B3034;");
+    ui->phonenumberlineEdit->setStyleSheet("border: 2px solid #2B3034;");
+    ui->bankassetlineEdit->setStyleSheet("border: 2px solid #2B3034;");
+    ui->capchalineEdit->setStyleSheet("border: 2px solid #2B3034;");
 }
 
 //capcha functions
@@ -263,14 +272,6 @@ bool SignUp::endcheck(QString str) {
         flag = 1;
     }
     return flag;
-}
-
-//empty fields function
-void SignUp::emptyFieldError(QLineEdit *lineEdit, QLabel *errorLabel)
-{
-    errorLabel->setText("This field cannot be empty");
-    lineEdit->setStyleSheet("border: 2px solid #DC3545;");
-    errorLabel->show();
 }
 
 void SignUp::on_userlineEdit_textChanged(const QString &arg1)
@@ -395,6 +396,7 @@ void SignUp::on_boxlineEdit_textChanged(const QString &arg1)
 
 void SignUp::on_boxpushButton_clicked()
 {
+    signupPageNumber = ui->boxlineEdit->text().toInt() ;
     ui->boxwidget->setVisible(false);
     ui->formAndSettingwidget->setVisible(true);
 }
@@ -405,34 +407,51 @@ void SignUp::on_submitAndNextpushButton_clicked() {
     checkCaptcha(ui->capchalineEdit ,ui->capchaimagelabel ,ui->capchaErrorlabel) ;
 
     int finalCheck = checkFielduser + checkFieldpass + checkFieldemail + checkFieldphonenumber + checkFieldbankasset + checkFieldcapcha ;
-
     if (finalCheck == 0) {
         QSqlQuery q;
         QString username = ui->userlineEdit->text();
         QString password = ui->passlineEdit->text();
         QString email = ui->emaillineEdit->text();
         QString country = ui->selectcountrycomboBox->currentText();
-        double phonenumber = ui->phonenumberlineEdit->text().toDouble();
-        double bankasset = ui->bankassetlineEdit->text().toDouble();
-
-        q.exec("SELECT username FROM Farmopolis WHERE username='" + username + "'");
+        QString phonenumber = ui->phonenumberlineEdit->text();
+        double bankassets = ui->bankassetlineEdit->text().toDouble();
+        q.exec("SELECT username FROM managers WHERE username = '"+username+"' ");
         if (q.first()) {
             ui->dataAndFinalchecklabel->show();
             ui->dataAndFinalchecklabel->setStyleSheet("background-color:#DC3545 ; color: white ;");
             ui->dataAndFinalchecklabel->setText("This username exists in the game");
         }
         else {
-            q.prepare("INSERT INTO Managers (username, password, email, phonenumber, country, bankasset) VALUES (:username, :password, :email, :phonenumber, :country, :bankasset)");
+            int id = lastCompletedForm ;
+            q.prepare("INSERT INTO managers (id, username, password, email, country, phonenumber, bankassets) VALUES (:id, :username, :password, :email, :country, :phonenumber, :bankassets)");
+            q.bindValue(":id", id);
             q.bindValue(":username", username);
             q.bindValue(":password", password);
             q.bindValue(":email", email);
-            q.bindValue(":phonenumber", phonenumber);
             q.bindValue(":country", country);
-            q.bindValue(":bankasset", bankasset);
+            q.bindValue(":phonenumber", phonenumber);
+            q.bindValue(":bankassets", bankassets);
+            q.exec();
 
             ui->dataAndFinalchecklabel->show();
             ui->dataAndFinalchecklabel->setText("Your information has been successfuly registered");
             ui->dataAndFinalchecklabel->setStyleSheet("background-color:#80B918; color: white;");
+            //QThread::msleep(500);
+            if(lastCompletedForm < signupPageNumber){
+                lastCompletedForm++ ;
+                setFormNumber() ;
+                fadeAnimation() ;
+                emptyTheForm() ;
+                hidelabels() ;
+                hideBorderlineEdits() ;
+                generateCaptcha(ui->capchaimagelabel) ;
+            }
+            else {
+                QSqlQuery updateQuery;
+                updateQuery.prepare("UPDATE managers SET firstRun = :firstRun WHERE id = :id");
+                updateQuery.bindValue(":id", signupPageNumber);
+                updateQuery.bindValue(":firstRun", "true");
+            }
         }
     }
     else {

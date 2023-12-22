@@ -118,16 +118,9 @@
               <item row="0" column="0">
                <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,4">
                 <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0,0,0">
+                 <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0,1,0">
                   <item>
                    <widget class="QPushButton" name="soundpushButton">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="darkmodepushButton">
                     <property name="text">
                      <string/>
                     </property>
@@ -149,7 +142,7 @@
                   <item>
                    <widget class="QLabel" name="titleFormlabel">
                     <property name="text">
-                     <string>SignUp 1</string>
+                     <string>Manager 1</string>
                     </property>
                    </widget>
                   </item>
@@ -167,14 +160,7 @@
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="previouspushButton">
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="nextpushButton">
+                   <widget class="QPushButton" name="darkmodepushButton">
                     <property name="text">
                      <string/>
                     </property>
