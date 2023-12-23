@@ -432,8 +432,8 @@ void SignUp::on_submitAndNextpushButton_clicked() {
             }
             else {
                 QSqlQuery q;
-                QString check = "true" ;
-                q.prepare("INSERT INTO managers (firstrun) VALUES (:check)");
+                QString check = "true";
+                q.prepare("INSERT INTO managers (firstrun) VALUES (:firstrun)");
                 q.bindValue(":firstrun", check);
                 q.exec();
             }
