@@ -5,16 +5,12 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QVBoxLayout>
-//music
-#include <QMediaPlayer>
-#include <QSettings>
-#include <QThread>
 
 #include <QRegExpValidator>
 #include <QIntValidator>
 #include "string"
 
+//file
 #include <QFile>
 #include <QTextStream>
 #include "QString"
@@ -27,13 +23,6 @@
 
 //capcha
 #include <QRandomGenerator>
-#include <QPainter>
-#include <QFont>
-#include <QTime>
-#include <QImage>
-
-#include <QStyle>
-#include <QIcon>
 #include <QPixmap>
 
 //animation
@@ -432,7 +421,6 @@ void SignUp::on_submitAndNextpushButton_clicked() {
             ui->dataAndFinalchecklabel->show();
             ui->dataAndFinalchecklabel->setText("Your information has been successfuly registered");
             ui->dataAndFinalchecklabel->setStyleSheet("background-color:#80B918; color: white;");
-            //QThread::msleep(500);
             if(lastCompletedForm < signupPageNumber){
                 lastCompletedForm++ ;
                 setFormNumber() ;
@@ -463,12 +451,14 @@ void SignUp::on_darkmodepushButton_clicked()
     static int check = 1 ;
     if(check){
         check = 0 ;
+        ui->darkmodepushButton->setStyleSheet("image: url(:/rec/Icons/light-mode.png);") ;
         ui->fatherwidget->setStyleSheet("#fatherwidget { background-color: #F8f9fa; }");
         ui->formwidget->setStyleSheet("#formwidget { background-color: #ADB5BD; }");
         ui->formAndSettingwidget->setStyleSheet("#formAndSettingwidget QLineEdit { background-color: #F8f9fa ; color: black ; border: 2px solid #ADB5BD}");
     }
     else {
         check = 1 ;
+        ui->darkmodepushButton->setStyleSheet("image: url(:/rec/Icons/night-mode.png);") ;
         ui->fatherwidget->setStyleSheet("#fatherwidget { background-color: #2B3034; }");
         ui->formwidget->setStyleSheet("#formwidget { background-color: #212529; }");
         ui->formAndSettingwidget->setStyleSheet("#formAndSettingwidget QLineEdit { background-color: #2B3034 ; color: white ; border: 2px solid #2B3034}");
