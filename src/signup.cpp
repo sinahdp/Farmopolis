@@ -1,5 +1,6 @@
 #include "signup.h"
 #include "ui_signup.h"
+#include "farmopolis.h"
 
 #include <QWidget>
 #include <QLabel>
@@ -72,7 +73,6 @@ SignUp::SignUp(QWidget *parent)
     //visiblity control
     ui->boxwidget->setVisible(true);
     ui->formAndSettingwidget->setVisible(false) ;
-    ui->welcomwidget->setVisible(false) ;
 
     QSqlQuery q;
     QString check = "true" ;
@@ -80,7 +80,9 @@ SignUp::SignUp(QWidget *parent)
     if(q.first()) {
         ui->boxwidget->setVisible(false);
         ui->formAndSettingwidget->setVisible(false) ;
-        ui->welcomwidget->setVisible(true) ;
+        Farmopolis *farmopolispage = new Farmopolis ;
+        farmopolispage->show() ;
+        deleteLater();
     }
 
     //add combobox items
@@ -386,6 +388,25 @@ void SignUp::on_boxpushButton_clicked()
     ui->formAndSettingwidget->setVisible(true);
 }
 
+void SignUp::on_darkmodepushButton_clicked()
+{
+    static int check = 1 ;
+    if(check){
+        check = 0 ;
+        ui->darkmodepushButton->setStyleSheet("image: url(:/rec/Icons/light-mode.png);") ;
+        ui->fatherwidget->setStyleSheet("#fatherwidget { background-color: #F8f9fa; }");
+        ui->formwidget->setStyleSheet("#formwidget { background-color: #ADB5BD; }");
+        ui->formAndSettingwidget->setStyleSheet("#formAndSettingwidget QLineEdit { background-color: #F8f9fa ; color: black ; border: 2px solid #ADB5BD}");
+    }
+    else {
+        check = 1 ;
+        ui->darkmodepushButton->setStyleSheet("image: url(:/rec/Icons/night-mode.png);") ;
+        ui->fatherwidget->setStyleSheet("#fatherwidget { background-color: #2B3034; }");
+        ui->formwidget->setStyleSheet("#formwidget { background-color: #212529; }");
+        ui->formAndSettingwidget->setStyleSheet("#formAndSettingwidget QLineEdit { background-color: #2B3034 ; color: white ; border: 2px solid #2B3034}");
+    }
+}
+
 //submit and database
 void SignUp::on_submitAndNextpushButton_clicked() {
 
@@ -436,6 +457,9 @@ void SignUp::on_submitAndNextpushButton_clicked() {
                 q.prepare("INSERT INTO managers (firstrun) VALUES (:firstrun)");
                 q.bindValue(":firstrun", check);
                 q.exec();
+                Farmopolis *farmopolispage = new Farmopolis ;
+                farmopolispage->show() ;
+                deleteLater();
             }
         }
     }
@@ -445,23 +469,3 @@ void SignUp::on_submitAndNextpushButton_clicked() {
         ui->dataAndFinalchecklabel->setStyleSheet("background-color:#DC3545 ; color: white ;");
     }
 }
-
-void SignUp::on_darkmodepushButton_clicked()
-{
-    static int check = 1 ;
-    if(check){
-        check = 0 ;
-        ui->darkmodepushButton->setStyleSheet("image: url(:/rec/Icons/light-mode.png);") ;
-        ui->fatherwidget->setStyleSheet("#fatherwidget { background-color: #F8f9fa; }");
-        ui->formwidget->setStyleSheet("#formwidget { background-color: #ADB5BD; }");
-        ui->formAndSettingwidget->setStyleSheet("#formAndSettingwidget QLineEdit { background-color: #F8f9fa ; color: black ; border: 2px solid #ADB5BD}");
-    }
-    else {
-        check = 1 ;
-        ui->darkmodepushButton->setStyleSheet("image: url(:/rec/Icons/night-mode.png);") ;
-        ui->fatherwidget->setStyleSheet("#fatherwidget { background-color: #2B3034; }");
-        ui->formwidget->setStyleSheet("#formwidget { background-color: #212529; }");
-        ui->formAndSettingwidget->setStyleSheet("#formAndSettingwidget QLineEdit { background-color: #2B3034 ; color: white ; border: 2px solid #2B3034}");
-    }
-}
-

@@ -31,5 +31,21 @@
         <file>rec/Icons/reload.png</file>
         <file>rec/Database/farmdata.db</file>
         <file>rec/Music/backgroundMusic.mp3</file>
+        <file>rec/Styles/FarmStyle.css</file>
+        <file>rec/Icons/farm/ground.png</file>
+        <file>rec/Icons/farm/sheep.png</file>
+        <file>rec/Icons/farm/cow.png</file>
+        <file>rec/Icons/farm/farmer.png</file>
+        <file>rec/Icons/farm/barley.png</file>
+        <file>rec/Icons/farm/wheat.png</file>
+        <file>rec/Icons/farm/hen.png</file>
+        <file>rec/Icons/farm/coins.png</file>
+        <file>rec/Icons/farm/dollar.png</file>
+        <file>rec/Icons/farm/eggs.png</file>
+        <file>rec/Icons/farm/milk.png</file>
+        <file>rec/Icons/farm/price.png</file>
+        <file>rec/Icons/farm/products.png</file>
+        <file>rec/Icons/farm/timer.png</file>
+        <file>rec/Icons/farm/user.png</file>
     </qresource>
 </RCC>
