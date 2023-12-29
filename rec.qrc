@@ -47,5 +47,8 @@
         <file>rec/Icons/farm/products.png</file>
         <file>rec/Icons/farm/timer.png</file>
         <file>rec/Icons/farm/user.png</file>
+        <file>rec/Icons/farm/soil.png</file>
+        <file>rec/Icons/farm/grass.png</file>
+        <file>rec/Styles/menuWidget.css</file>
     </qresource>
 </RCC>
