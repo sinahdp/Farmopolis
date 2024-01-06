@@ -20,7 +20,7 @@
 #groundwidget {
     background-color: #99582A;
 }
-#groundwidget > QLabel {
+#groundwidget > Ground {
     background-color: #BC6C25;
     border: 3px solid #FFB703;
 }
