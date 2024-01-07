@@ -11,11 +11,13 @@ CONFIG += c++11
 
 SOURCES += \
     src/farmopolis.cpp \
+    src/ground.cpp \
     src/main.cpp \
     src/signup.cpp
 
 HEADERS += \
     src/farmopolis.h \
+    src/ground.h \
     src/signup.h
 
 FORMS += \

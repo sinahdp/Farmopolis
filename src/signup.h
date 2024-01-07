@@ -37,7 +37,7 @@ public:
 
     void checkCaptcha(QLineEdit *captchaEntry , QLabel *captchaLabel , QLabel *erorLable) ;
 
-
+    int NumberOfUsers ;
 private slots:
 
     void on_boxpushButton_clicked();

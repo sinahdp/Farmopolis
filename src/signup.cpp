@@ -384,6 +384,7 @@ void SignUp::on_boxlineEdit_textChanged(const QString &arg1)
 void SignUp::on_boxpushButton_clicked()
 {
     signupPageNumber = ui->boxlineEdit->text().toInt() ;
+    NumberOfUsers = signupPageNumber ;
     ui->boxwidget->setVisible(false);
     ui->formAndSettingwidget->setVisible(true);
 }
