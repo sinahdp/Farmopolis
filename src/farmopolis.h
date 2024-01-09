@@ -7,6 +7,7 @@
 #include "ground.h"
 
 #include <QTimer>
+#include <QTime>
 
 #include <QWidget>
 #include <QLabel>
@@ -36,6 +37,10 @@ public:
 
     void setOperatorLabels() ;
 
+    void setTimerOperatorLabel() ;
+
+    void buyAnimalOrSeed() ;
+
 private slots:
 
     void on_buygroundpushButton_clicked();
@@ -54,25 +59,30 @@ private slots:
 
     void on_collectpushButton_clicked();
 
+    void on_buywheatpushButton_clicked();
+
+    void on_buybarleypushButton_clicked();
+
 private:
     Ui::Farmopolis *ui;
 
     Ground *currentground = nullptr ;
 
-    int remainingTime = 180;
-    QTimer timer;
+    int remainingTimeGame = 180 ;
+    QTimer timerGame ;
+    QTimer timerproduct ;
 
-    int coins = 100 ;
-    int henPrice = 3 ;
-    int sheepPrice = 5 ;
-    int cowPrice = 7 ;
+    int coins = 20;
 
-    int workerPrice = 5 ;
-    int groundPrice = 3 ;
+    int henPrice = 3;
+    int sheepPrice = 5;
+    int cowPrice = 7;
+    int wheatPrice = 2;
+    int barleyPrice = 2;
 
-    int eggprice = 2 ;
-    int milksheep = 3 ;
-    int milkcow = 5 ;
+    int workerPrice = 5;
+    int groundPrice = 3;
+
 
     int numberWorkers = 3 ;
     int numberFreeWorkers = 3 ;

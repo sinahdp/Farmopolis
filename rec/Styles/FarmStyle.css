@@ -35,10 +35,10 @@
     image: url(:/rec/Icons/farm/cow.png);
 }
 #wheatNamelabel {
-    image: url(:/rec/Icons/farm/wheat.png);
+    image: url(:/rec/Icons/farm/wheat-bag.png);
 }
 #barleyNamelabel {
-    image: url(:/rec/Icons/farm/barley.png);
+    image: url(:/rec/Icons/farm/barley-bag.png);
 }
 #workerNamelabel {
     image: url(:/rec/Icons/farm/farmer.png);
@@ -90,7 +90,7 @@
     image: url(:/rec/Icons/farm/knife.png);
     background-color: #FFB703;
 }
-#workerErrorlabel {
+#coinAndWorkerErrorlabel {
     color:white;
     background-color: #DC3545;
     font-size: 16px;
@@ -127,3 +127,16 @@ QLabel:hover {
     background-color: #2B3034;
 }
 /* pushButton styles */
+QProgressBar {
+    border: 2px solid #212529;
+    border-radius: 8px;
+    background-color: #2B3034;
+    min-height: 48px;
+    min-width: 48px;
+}
+QProgressBar::chunk {
+    background-color: #FFB703;
+    border-radius: 8px;
+    min-height: 48px;
+    min-width: 48px;
+}

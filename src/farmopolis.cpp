@@ -20,8 +20,8 @@ Farmopolis::Farmopolis(QWidget *parent) :
     ui->setupUi(this);
 
     //set minmum size of page
-    setMinimumSize(2000,1200);
-    setMaximumSize(2000,1200);
+    setMinimumSize(2000,1250);
+    setMaximumSize(2000,1250);
 
     //add css file
     QFile styleFile(":/rec/Styles/FarmStyle.css");
@@ -41,22 +41,26 @@ Farmopolis::Farmopolis(QWidget *parent) :
         for (int j = 0; j < numCols; ++j) {
             // ایجاد یک Ground جدید
             Ground *ground = new Ground("",ui->groundwidget);
-
-            // اضافه کردن رویداد کلیک به Ground
             ground->installEventFilter(this);
-
-            // اضافه کردن Ground به QGridLayout
             gridLayout->addWidget(ground, i, j);
         }
     }
+    //set first ground color
     Ground *firstground = qobject_cast<Ground*>(gridLayout->itemAtPosition(0, 4)->widget());
     firstground->setStyleSheet("background-color: #55A630 ;border:3px solid #212529;");
     firstground->isgreen = 1 ;
     currentground = firstground ;
 
+    //set coins and workers
     setCoinsLabe(coins) ;
     setWorkersLabel(numberFreeWorkers , numberWorkers) ;
+
+    //set operatorwidget and workerErrorLabel
     ui->operatorwidget->hide() ;
+    ui->coinAndWorkerErrorlabel->hide() ;
+
+    ui->progressBar->setTextVisible(false);
+
 }
 
 Farmopolis::~Farmopolis() {
@@ -83,30 +87,49 @@ void Farmopolis::setWorkersLabel(int free, int all) {
     ui->numberOfWorkerslabel->setText(" " + QString::number(free) + " / " + QString::number(all)) ;
 }
 
-void Farmopolis::setOperatorLabels()
-{
-    ui->operatorwidget->setVisible(true) ;
+void Farmopolis::setOperatorLabels() {
+    ui->operatorwidget->show() ;
+    ui->coinAndWorkerErrorlabel->hide() ;
     int productNumber = currentground->isfull ;
-    ui->workerErrorlabel->setVisible(false) ;
     switch (productNumber) {
         case 0 :
             ui->operatorwidget->hide() ;
         case 1 :
             ui->animalkilllabel->setStyleSheet("image: url(:/rec/Icons/farm/hen.png);") ;
             ui->productcollectlabel->setStyleSheet("image: url(:/rec/Icons/farm/eggs.png);") ;
-            ui->profitkilllabel->setText("   " + QString::number(henPrice - 1)) ;
             break ;
         case 2 :
             ui->animalkilllabel->setStyleSheet("image: url(:/rec/Icons/farm/sheep.png);") ;
             ui->productcollectlabel->setStyleSheet("image: url(:/rec/Icons/farm/milk.png);") ;
-            ui->profitkilllabel->setText("   " + QString::number(sheepPrice - 1)) ;
             break ;
         case 3 :
             ui->animalkilllabel->setStyleSheet("image: url(:/rec/Icons/farm/cow.png);") ;
             ui->productcollectlabel->setStyleSheet("image: url(:/rec/Icons/farm/milk.png);") ;
-            ui->profitkilllabel->setText("   " + QString::number(cowPrice - 1)) ;
             break ;
+        case 4 :
+            ui->productcollectlabel->setStyleSheet("image: url(:/rec/Icons/farm/wheat.png);") ;
+            break ;
+        case 5 :
+            ui->productcollectlabel->setStyleSheet("image: url(:/rec/Icons/farm/barley.png);") ;
+            break ;
+
     }
+    if(currentground->isfull <= 3) {
+        ui->killIconlabel->setVisible(true) ;
+        ui->animalkilllabel->setVisible(true) ;
+        ui->profitkilllabel->setVisible(true) ;
+        ui->killpushButton->setVisible(true) ;
+        ui->profitkilllabel->setText("     " + QString::number(currentground->priceBuyProduct - 1)) ;
+    }
+    else {
+        ui->killIconlabel->setVisible(false) ;
+        ui->animalkilllabel->setVisible(false) ;
+        ui->profitkilllabel->setVisible(false) ;
+        ui->killpushButton->setVisible(false) ;
+    }
+
+    setTimerOperatorLabel() ;
+    ui->progressBar->setRange(0, currentground->productionTime);
 }
 
 void Farmopolis::selectGround(Ground *clickedground) {
@@ -139,109 +162,184 @@ void Farmopolis::on_buyWorkerpushButton_clicked() {
     }
 }
 
-void Farmopolis::on_buyhenpushButton_clicked() {
-    if (currentground && currentground->isgreen == 1 && currentground->isfull == 0 && coins >= henPrice && numberFreeWorkers >= 1) {
-        QString originalStyles = currentground->styleSheet();
-        currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/hen.png) center center no-repeat;");
-        currentground->isfull = 1 ;
-        coins = coins - henPrice ;
-        setCoinsLabe(coins) ;
-        numberFreeWorkers-- ;
-        setWorkersLabel(numberFreeWorkers , numberWorkers) ;
-        setOperatorLabels() ;
+void Farmopolis::buyAnimalOrSeed() {
+    currentground->setVariabels(currentground->isfull) ;
+    currentground->counterproduction = currentground->productionTime ;
+    currentground->counterExpiration = currentground->ExpirationTime ;
+    if(currentground->firstTime) {
+        currentground->calcproductionTimer() ;
+        currentground->calcExpirationTimer() ;
+        currentground->firstTime = 0 ;
+    }
+    setOperatorLabels() ;
+    numberFreeWorkers-- ;
+    setWorkersLabel(numberFreeWorkers , numberWorkers) ;
+    coins = coins - currentground->priceBuyProduct ;
+    setCoinsLabe(coins) ;
+}
 
+void Farmopolis::on_buyhenpushButton_clicked() {
+    if(numberFreeWorkers >= 1) {
+        if(coins >= henPrice) {
+            if (currentground && currentground->isgreen == 1 && currentground->isfull == 0) {
+                QString originalStyles = currentground->styleSheet();
+                currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/hen.png) center center no-repeat;");
+                currentground->isfull = 1 ;
+                buyAnimalOrSeed() ;
+            }
+        }
+        else {
+            ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
+            ui->coinAndWorkerErrorlabel->show() ;
+        }
+    }
+    else {
+        ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
+        ui->coinAndWorkerErrorlabel->show() ;
     }
 }
 
 void Farmopolis::on_buysheeppushButton_clicked() {
-    if (currentground && currentground->isgreen == 1 && currentground->isfull == 0 && coins >= sheepPrice && numberFreeWorkers >= 1) {
-        QString originalStyles = currentground->styleSheet();
-        currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/sheep.png) center center no-repeat;");
-        currentground->isfull = 2 ;
-        coins = coins - sheepPrice ;
-        setCoinsLabe(coins) ;
-        numberFreeWorkers-- ;
-        setWorkersLabel(numberFreeWorkers , numberWorkers) ;
-        setOperatorLabels() ;
+    if(numberFreeWorkers >= 1) {
+        if(coins >= sheepPrice) {
+            if (currentground && currentground->isgreen == 1 && currentground->isfull == 0) {
+                QString originalStyles = currentground->styleSheet();
+                currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/sheep.png) center center no-repeat;");
+                currentground->isfull = 2 ;
+                buyAnimalOrSeed() ;
+            }
+        }
+        else {
+            ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
+            ui->coinAndWorkerErrorlabel->show() ;
+        }
+    }
+    else {
+        ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
+        ui->coinAndWorkerErrorlabel->show() ;
     }
 }
 
 void Farmopolis::on_buycowpushButton_clicked() {
-    if (currentground && currentground->isgreen == 1 && currentground->isfull == 0 && coins >= cowPrice && numberFreeWorkers >= 1) {
-        QString originalStyles = currentground->styleSheet();
-        currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/cow.png) center center no-repeat;");
-        currentground->isfull = 3 ;
-        coins = coins - cowPrice ;
-        setCoinsLabe(coins) ;
-        numberFreeWorkers-- ;
-        setWorkersLabel(numberFreeWorkers , numberWorkers) ;
-        setOperatorLabels() ;
+    if(numberFreeWorkers >= 1) {
+        if(coins >= cowPrice) {
+            if (currentground && currentground->isgreen == 1 && currentground->isfull == 0) {
+                QString originalStyles = currentground->styleSheet();
+                currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/cow.png) center center no-repeat;");
+                currentground->isfull = 3 ;
+                buyAnimalOrSeed() ;
+            }
+        }
+        else {
+            ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
+            ui->coinAndWorkerErrorlabel->show() ;
+        }
+    }
+    else {
+        ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
+        ui->coinAndWorkerErrorlabel->show() ;
+    }
+}
+
+void Farmopolis::on_buywheatpushButton_clicked() {
+    if(numberFreeWorkers >= 1) {
+        if(coins >= wheatPrice) {
+            if (currentground && currentground->isgreen == 1 && currentground->isfull == 0) {
+                QString originalStyles = currentground->styleSheet();
+                currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/wheat-bag.png) center center no-repeat;");
+                currentground->isfull = 4 ;
+                buyAnimalOrSeed() ;
+            }
+        }
+        else {
+            ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
+            ui->coinAndWorkerErrorlabel->show() ;
+        }
+    }
+    else {
+        ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
+        ui->coinAndWorkerErrorlabel->show() ;
+    }
+}
+
+void Farmopolis::on_buybarleypushButton_clicked() {
+    if(numberFreeWorkers >= 1) {
+        if(coins >= barleyPrice) {
+            if (currentground && currentground->isgreen == 1 && currentground->isfull == 0) {
+                QString originalStyles = currentground->styleSheet();
+                currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/barley-bag.png) center center no-repeat;");
+                currentground->isfull = 5 ;
+                buyAnimalOrSeed() ;
+            }
+        }
+        else {
+            ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
+            ui->coinAndWorkerErrorlabel->show() ;
+        }
+    }
+    else {
+        ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
+        ui->coinAndWorkerErrorlabel->show() ;
     }
 }
 
 void Farmopolis::on_roundStartpushButton_clicked() {
-    timer.start(1000);
-    connect(&timer, &QTimer::timeout, [&]() {
-        remainingTime--;
-        if (remainingTime >= 0) {
-            ui->roundStartpushButton->setText(QString::number(remainingTime) + " s");
+    timerGame.start(1000);
+    connect(&timerGame, &QTimer::timeout, [&]() {
+        remainingTimeGame--;
+        if (remainingTimeGame >= 0) {
+            ui->roundStartpushButton->setText(QString::number(remainingTimeGame) + " s");
         }
         else {
-            timer.stop();
+            timerGame.stop();
             ui->roundStartpushButton->setText("Start");
         }
     });
 
 }
 
-
-void Farmopolis::on_killpushButton_clicked()
-{
-    int productNumber = currentground->isfull;
-    switch (productNumber) {
-        case 1 :
-            currentground->setStyleSheet("border:3px solid #212529 ; background-color: #55A630 ;");
-            coins = coins + henPrice - 1 ;
-            setCoinsLabe(coins) ;
-            break ;
-        case 2 :
-            currentground->setStyleSheet("border:3px solid #212529 ; background-color: #55A630 ;");
-            coins = coins + sheepPrice - 1 ;
-            setCoinsLabe(coins) ;
-            break ;
-        case 3 :
-            currentground->setStyleSheet("border:3px solid #212529 ; background-color: #55A630 ;");
-            coins = coins + cowPrice - 1 ;
-            setCoinsLabe(coins) ;
-            break ;
-    }
+void Farmopolis::on_killpushButton_clicked() {
+    currentground->countProduct = 0 ;
+    currentground->amoutOfLoss = 0 ;
+    currentground->setStyleSheet("border:3px solid #212529 ; background-color: #55A630 ;");
+    coins = coins + currentground->priceBuyProduct - 1 ;
+    setCoinsLabe(coins) ;
     currentground->isfull = 0 ;
     numberFreeWorkers++ ;
     setWorkersLabel(numberFreeWorkers , numberWorkers) ;
     setOperatorLabels() ;
 }
 
-
 void Farmopolis::on_collectpushButton_clicked() {
-    int productNumber = currentground->isfull ;
     if(numberFreeWorkers >= 1) {
-        switch (productNumber) {
-            case 1 :
-                coins = coins + eggprice ;
-                setCoinsLabe(coins) ;
-                break ;
-            case 2 :
-                coins = coins + milksheep ;
-                setCoinsLabe(coins) ;
-                break ;
-            case 3 :
-                coins = coins + milkcow ;
-                setCoinsLabe(coins) ;
-                break ;
-        }
+        int count = currentground->countProduct ;
+        int price = currentground->priceSellProduct ;
+        int less = currentground->amoutOfLoss ;
+        coins = coins + count*price - less ;
+        currentground->countProduct = 0 ;
+        currentground->amoutOfLoss = 0 ;
+        setCoinsLabe(coins) ;
     }
-    else{
-        ui->workerErrorlabel->setText("You do not have a free worker") ;
+    else {
+        ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
+        ui->coinAndWorkerErrorlabel->show() ;
     }
 }
+
+void Farmopolis::setTimerOperatorLabel() {
+    timerproduct.start(200) ;
+    connect(&timerproduct, &QTimer::timeout, [&]() {
+        ui->productionTimerlabel->setText(" 00 : " + QString::number(currentground->counterproduction)) ;
+        int count = currentground->countProduct ;
+        int price = currentground->priceSellProduct ;
+        int less = currentground->amoutOfLoss ;
+        int profit = count*price - less ;
+        ui->profitCollectionlabel->setText("     " + QString::number(profit)) ;
+        ui->progressBar->setValue(currentground->counterproduction) ;
+    });
+}
+
+
+
+
 

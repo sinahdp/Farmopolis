@@ -51,5 +51,7 @@
         <file>rec/Icons/farm/knife.png</file>
         <file>rec/Icons/farm/collect.png</file>
         <file>rec/Icons/farm/greentimer.png</file>
+        <file>rec/Icons/farm/barley-bag.png</file>
+        <file>rec/Icons/farm/wheat-bag.png</file>
     </qresource>
 </RCC>
