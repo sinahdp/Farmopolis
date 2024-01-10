@@ -8,11 +8,29 @@
     background-color: #212529;
     font-size: 20px;
 }
+#Ranking {
+    background-color: #2B3034;
+    font-size: 20px;
+}
 #farmopoliswidget {
     min-width:1800px;
     background-color: #2B3034;
     border-radius: 24px;
 }
+#rankingwidget {
+    background-color: #212529;
+    border-radius: 24px;
+}
+#rankingwidget QLabel {
+    padding: 8px;
+}
+#titleRankinglabel {
+    background-color: #FFB703;
+    padding-left : 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
 #productsstorewidget , #operatorwidget {
     background-color: #212529;
     border-radius: 24px;
@@ -69,7 +87,12 @@
     color: black;
     min-width: 80px;
 }
-#useractivelabel {
+#rankingPlayerslabel {
+    image: url(:/rec/Icons/farm/trophy.png);
+    background-color: #FFB703;
+    border : 2px solid #FFB703;
+}
+#useractivelabel , #usernamePlayerslabel {
     image: url(:/rec/Icons/farm/user.png);
     background-color: #FFB703;
     border : 2px solid #FFB703;
@@ -79,7 +102,7 @@
     background-color: #FFB703;
     border : 2px solid #FFB703;
 }
-#coinInventoryIconlabel {
+#coinInventoryIconlabel , #coinsPlayerslabel{
     image: url(:/rec/Icons/farm/coins.png);
     background-color: #FFB703;
     border : 2px solid #FFB703;

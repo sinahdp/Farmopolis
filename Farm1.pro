@@ -13,15 +13,18 @@ SOURCES += \
     src/farmopolis.cpp \
     src/ground.cpp \
     src/main.cpp \
+    src/ranking.cpp \
     src/signup.cpp
 
 HEADERS += \
     src/farmopolis.h \
     src/ground.h \
+    src/ranking.h \
     src/signup.h
 
 FORMS += \
     src/farmopolis.ui \
+    src/ranking.ui \
     src/signup.ui
 
 # Default rules for deployment.

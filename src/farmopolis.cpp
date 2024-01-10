@@ -322,8 +322,10 @@ void Farmopolis::setGameTime() {
             q.prepare("SELECT id FROM managers WHERE id = :id");
             q.bindValue(":id", id);
             if (q.exec() && q.next()) {
-                q.prepare("INSERT INTO managers (coins) VALUES (:coins)");
+                q.prepare("UPDATE managers SET coins = :coins WHERE id = :id");
                 q.bindValue(":coins", coins);
+                q.bindValue(":id", id);
+                q.exec();
             }
 
             coins = 10 ;
@@ -339,6 +341,10 @@ void Farmopolis::setGameTime() {
                 timerGame.stop() ;
                 ui->productsstorewidget->hide() ;
                 ui->groundwidget->hide() ;
+                ui->coinAndWorkerErrorlabel->hide() ;
+                Ranking *ranking = new Ranking ;
+                ranking->show() ;
+                deleteLater();
             }
             setUserNameLabel() ;
         }

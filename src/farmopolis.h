@@ -5,6 +5,7 @@
 
 #include "signup.h"
 #include "ground.h"
+#include "ranking.h"
 
 #include <QTimer>
 #include <QTime>
@@ -78,14 +79,14 @@ private:
 
     Ground *currentground = nullptr ;
 
-    int remainingTimeGame = 20 ;
+    int remainingTimeGame = 180 ;
     int countremainingTimeGame ;
     QTimer timerGame ;
     QTimer timerproduct ;
 
     int currentUser = 1 ;
     int numbersOfUsers ;
-    int coins = 20 ;
+    int coins = 10 ;
 
     int henPrice = 3;
     int sheepPrice = 5;
@@ -97,8 +98,8 @@ private:
     int groundPrice = 3;
 
 
-    int numberWorkers = 3 ;
-    int numberFreeWorkers = 3 ;
+    int numberWorkers = 1 ;
+    int numberFreeWorkers = 1 ;
 
     QList<Ground*> groundList ;
 
