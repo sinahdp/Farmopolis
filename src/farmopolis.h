@@ -9,6 +9,8 @@
 #include <QTimer>
 #include <QTime>
 
+#include <QList>
+
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
@@ -41,6 +43,14 @@ public:
 
     void buyAnimalOrSeed() ;
 
+    void resetGame() ;
+
+    void setFirstGround() ;
+
+    void setUserNameLabel() ;
+
+    void setGameTime() ;
+
 private slots:
 
     void on_buygroundpushButton_clicked();
@@ -53,8 +63,6 @@ private slots:
 
     void on_buyWorkerpushButton_clicked();
 
-    void on_roundStartpushButton_clicked();
-
     void on_killpushButton_clicked();
 
     void on_collectpushButton_clicked();
@@ -63,16 +71,21 @@ private slots:
 
     void on_buybarleypushButton_clicked();
 
+
+
 private:
     Ui::Farmopolis *ui;
 
     Ground *currentground = nullptr ;
 
-    int remainingTimeGame = 180 ;
+    int remainingTimeGame = 20 ;
+    int countremainingTimeGame ;
     QTimer timerGame ;
     QTimer timerproduct ;
 
-    int coins = 20;
+    int currentUser = 1 ;
+    int numbersOfUsers ;
+    int coins = 20 ;
 
     int henPrice = 3;
     int sheepPrice = 5;
@@ -86,6 +99,8 @@ private:
 
     int numberWorkers = 3 ;
     int numberFreeWorkers = 3 ;
+
+    QList<Ground*> groundList ;
 
 };
 

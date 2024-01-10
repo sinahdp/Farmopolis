@@ -13,6 +13,12 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+//database
+#include <QSqlDatabase>
+#include "QSqlDriver"
+#include "QSqlQuery"
+#include "QSqlQueryModel"
+
 Farmopolis::Farmopolis(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Farmopolis)
@@ -43,8 +49,11 @@ Farmopolis::Farmopolis(QWidget *parent) :
             Ground *ground = new Ground("",ui->groundwidget);
             ground->installEventFilter(this);
             gridLayout->addWidget(ground, i, j);
+
+            groundList.append(ground);
         }
     }
+
     //set first ground color
     Ground *firstground = qobject_cast<Ground*>(gridLayout->itemAtPosition(0, 4)->widget());
     firstground->setStyleSheet("background-color: #55A630 ;border:3px solid #212529;");
@@ -61,6 +70,19 @@ Farmopolis::Farmopolis(QWidget *parent) :
 
     ui->progressBar->setTextVisible(false);
 
+    //setUsernameLabel
+    setUserNameLabel() ;
+
+    //get numbers of users
+    QSqlQuery q;
+    q.prepare("SELECT MAX(CAST(id AS INTEGER)) FROM managers");  // جایگزین کردن "id" با نام فیلد مورد نظر شما
+    if (q.exec() && q.next()) {
+        int maxId = q.value(0).toInt();
+        numbersOfUsers = maxId ;
+    }
+
+    //start game time
+    setGameTime() ;
 }
 
 Farmopolis::~Farmopolis() {
@@ -283,16 +305,42 @@ void Farmopolis::on_buybarleypushButton_clicked() {
     }
 }
 
-void Farmopolis::on_roundStartpushButton_clicked() {
+void Farmopolis::setGameTime() {
     timerGame.start(1000);
+    countremainingTimeGame = remainingTimeGame ;
     connect(&timerGame, &QTimer::timeout, [&]() {
-        remainingTimeGame--;
-        if (remainingTimeGame >= 0) {
-            ui->roundStartpushButton->setText(QString::number(remainingTimeGame) + " s");
+        countremainingTimeGame-- ;
+        if (countremainingTimeGame >= 0) {
+            ui->timerGamelabel->setText("   " + QString::number(countremainingTimeGame) + " s");
         }
         else {
-            timerGame.stop();
-            ui->roundStartpushButton->setText("Start");
+            resetGame() ;
+            setFirstGround() ;
+
+            QSqlQuery q;
+            QString id = QString::number(currentUser);
+            q.prepare("SELECT id FROM managers WHERE id = :id");
+            q.bindValue(":id", id);
+            if (q.exec() && q.next()) {
+                q.prepare("INSERT INTO managers (coins) VALUES (:coins)");
+                q.bindValue(":coins", coins);
+            }
+
+            coins = 10 ;
+            numberFreeWorkers = 1 ;
+            numberWorkers = 1 ;
+            countremainingTimeGame = remainingTimeGame ;
+
+            setCoinsLabe(coins) ;
+            setWorkersLabel(numberFreeWorkers , numberWorkers) ;
+
+            currentUser++ ;
+            if(currentUser > numbersOfUsers) {
+                timerGame.stop() ;
+                ui->productsstorewidget->hide() ;
+                ui->groundwidget->hide() ;
+            }
+            setUserNameLabel() ;
         }
     });
 
@@ -339,7 +387,34 @@ void Farmopolis::setTimerOperatorLabel() {
     });
 }
 
+void Farmopolis::resetGame(){
+    for (Ground* ground : groundList) {
+        ground->setStyleSheet("background-color: #BC6C25 ; border: 3px solid #FFB703;");
+        ground->isgreen = 0 ;
+        ground->isfull = 0 ;
+        ground->countProduct = 0 ;
+        ground->amoutOfLoss = 0 ;
+    }
+    ui->operatorwidget->hide() ;
+}
 
+void Farmopolis::setFirstGround() {
+    Ground *firstground = groundList.at(4);
+    firstground->setStyleSheet("background-color: #55A630 ;border:3px solid #212529;");
+    firstground->isgreen = 1 ;
+    currentground = firstground ;
+}
+
+void Farmopolis::setUserNameLabel() {
+    QSqlQuery q;
+    QString id = QString::number(currentUser) ;
+    q.prepare("SELECT username FROM managers WHERE id = :id");
+    q.bindValue(":id", id);
+    if (q.exec() && q.next()) {
+        QString username = q.value(0).toString();
+        ui->activeuserlabel->setText(": " + username) ;
+    }
+}
 
 
 

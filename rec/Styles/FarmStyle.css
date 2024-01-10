@@ -62,6 +62,13 @@
     image: url(:/rec/Icons/farm/price.png);
     background-color: #FFB703;
 }
+
+#timerGamelabel {
+    background-color: #FFB703;
+    border : 2px solid #FFB703;
+    color: black;
+    min-width: 80px;
+}
 #useractivelabel {
     image: url(:/rec/Icons/farm/user.png);
     background-color: #FFB703;

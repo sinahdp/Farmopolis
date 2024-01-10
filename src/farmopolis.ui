@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>549</width>
-    <height>701</height>
+    <height>708</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -89,9 +89,9 @@
               <number>10</number>
              </property>
              <item>
-              <widget class="QPushButton" name="roundStartpushButton">
+              <widget class="QLabel" name="timerGamelabel">
                <property name="text">
-                <string>start</string>
+                <string> 0:00</string>
                </property>
               </widget>
              </item>
