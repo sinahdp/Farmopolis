@@ -52,6 +52,10 @@ public:
 
     void setGameTime() ;
 
+    void setGroundWhenHaveProduct() ;
+
+    void setBackGroundGround(Ground *ground , int productNumber , bool flag) ;
+
 private slots:
 
     void on_buygroundpushButton_clicked();
@@ -70,18 +74,30 @@ private slots:
 
     void on_buywheatpushButton_clicked();
 
-    void on_buybarleypushButton_clicked();
+    void on_buybarleypushButton_clicked(); 
 
-
+    void on_soundpushButton_clicked();
 
 private:
     Ui::Farmopolis *ui;
 
     Ground *currentground = nullptr ;
 
+    QMediaPlayer gameSound;
+    QMediaPlayer clickSound;
+    QMediaPlayer alertSound;
+    QMediaPlayer coinsSound;
+    QMediaPlayer henSound;
+    QMediaPlayer sheepSound;
+    QMediaPlayer cowSound;
+    QMediaPlayer killSound;
+    QMediaPlayer plantingSound;
+
     int remainingTimeGame = 180 ;
     int countremainingTimeGame ;
+
     QTimer timerGame ;
+    QTimer timerIsProduct ;
     QTimer timerproduct ;
 
     int currentUser = 1 ;

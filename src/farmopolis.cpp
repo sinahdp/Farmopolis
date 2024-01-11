@@ -6,6 +6,10 @@
 #include <QTextStream>
 #include "QString"
 
+//media
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+
 #include <QMouseEvent>
 
 #include <QWidget>
@@ -45,7 +49,6 @@ Farmopolis::Farmopolis(QWidget *parent) :
 
     for (int i = 0; i < numRows; ++i) {
         for (int j = 0; j < numCols; ++j) {
-            // ایجاد یک Ground جدید
             Ground *ground = new Ground("",ui->groundwidget);
             ground->installEventFilter(this);
             gridLayout->addWidget(ground, i, j);
@@ -75,7 +78,7 @@ Farmopolis::Farmopolis(QWidget *parent) :
 
     //get numbers of users
     QSqlQuery q;
-    q.prepare("SELECT MAX(CAST(id AS INTEGER)) FROM managers");  // جایگزین کردن "id" با نام فیلد مورد نظر شما
+    q.prepare("SELECT MAX(CAST(id AS INTEGER)) FROM managers");
     if (q.exec() && q.next()) {
         int maxId = q.value(0).toInt();
         numbersOfUsers = maxId ;
@@ -83,15 +86,56 @@ Farmopolis::Farmopolis(QWidget *parent) :
 
     //start game time
     setGameTime() ;
+
+    //start timer of timer timerIsProduct
+    setGroundWhenHaveProduct() ;
+
+    //set audio files
+    gameSound.setMedia(QUrl("qrc:/rec/Music/backgroundMusic.mp3"));
+    clickSound.setMedia(QUrl("qrc:/rec/Music/click.mp3"));
+    alertSound.setMedia(QUrl("qrc:/rec/Music/alert.mp3"));
+    coinsSound.setMedia(QUrl("qrc:/rec/Music/coins.mp3"));
+    plantingSound.setMedia(QUrl("qrc:/rec/Music/planting.mp3"));
+    killSound.setMedia(QUrl("qrc:/rec/Music/kill.mp3"));
+    henSound.setMedia(QUrl("qrc:/rec/Music/hen.mp3"));
+    sheepSound.setMedia(QUrl("qrc:/rec/Music/sheep.mp3"));
+    cowSound.setMedia(QUrl("qrc:/rec/Music/cow.mp3"));
+
+    gameSound.play();
+
 }
 
 Farmopolis::~Farmopolis() {
     delete ui;
 }
 
+void Farmopolis::setUserNameLabel() {
+    QSqlQuery q;
+    QString id = QString::number(currentUser) ;
+    q.prepare("SELECT username FROM managers WHERE id = :id");
+    q.bindValue(":id", id);
+    if (q.exec() && q.next()) {
+        QString username = q.value(0).toString();
+        ui->activeuserlabel->setText(": " + username) ;
+    }
+}
+
+void Farmopolis::on_soundpushButton_clicked() {
+    static int check = 0 ;
+    if(check) {
+        ui->soundpushButton->setStyleSheet("image: url(:/rec/Icons/volume.png);") ;
+        check = 0 ;
+        gameSound.play();
+    }
+    else {
+        ui->soundpushButton->setStyleSheet("image: url(:/rec/Icons/mute.png);") ;
+        check = 1 ;
+        gameSound.pause();
+    }
+}
+
 bool Farmopolis::eventFilter(QObject *obj, QEvent *event) {
     if (event->type() == QEvent::MouseButtonPress) {
-        // تبدیل obj به Ground*
         Ground* clickedground = qobject_cast<Ground*>(obj);
         if (clickedground) {
             selectGround(clickedground);
@@ -134,7 +178,6 @@ void Farmopolis::setOperatorLabels() {
         case 5 :
             ui->productcollectlabel->setStyleSheet("image: url(:/rec/Icons/farm/barley.png);") ;
             break ;
-
     }
     if(currentground->isfull <= 3) {
         ui->killIconlabel->setVisible(true) ;
@@ -165,12 +208,20 @@ void Farmopolis::selectGround(Ground *clickedground) {
 }
 
 void Farmopolis::on_buygroundpushButton_clicked() {
-    if (currentground && currentground->isgreen == 0 && coins >= groundPrice) {
-        currentground->isgreen = 1 ;
-        QString originalStyles = currentground->styleSheet();
-        currentground->setStyleSheet(originalStyles + "background-color: #55A630;");
-        coins = coins - groundPrice ;
-        setCoinsLabe(coins) ;
+    if( coins >= groundPrice) {
+        if (currentground && currentground->isgreen == 0) {
+            currentground->isgreen = 1 ;
+            QString originalStyles = currentground->styleSheet();
+            currentground->setStyleSheet(originalStyles + "background-color: #55A630;");
+            coins = coins - groundPrice ;
+            setCoinsLabe(coins) ;
+            clickSound.play() ;
+        }
+    }
+    else {
+        ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
+        ui->coinAndWorkerErrorlabel->show() ;
+        alertSound.play() ;
     }
 }
 
@@ -181,6 +232,12 @@ void Farmopolis::on_buyWorkerpushButton_clicked() {
         coins = coins - workerPrice ;
         setCoinsLabe(coins) ;
         setWorkersLabel(numberFreeWorkers , numberWorkers) ;
+        clickSound.play() ;
+    }
+    else {
+        ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
+        ui->coinAndWorkerErrorlabel->show() ;
+        alertSound.play() ;
     }
 }
 
@@ -208,16 +265,19 @@ void Farmopolis::on_buyhenpushButton_clicked() {
                 currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/hen.png) center center no-repeat;");
                 currentground->isfull = 1 ;
                 buyAnimalOrSeed() ;
+                henSound.play() ;
             }
         }
         else {
             ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
             ui->coinAndWorkerErrorlabel->show() ;
+            alertSound.play() ;
         }
     }
     else {
         ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
         ui->coinAndWorkerErrorlabel->show() ;
+        alertSound.play() ;
     }
 }
 
@@ -229,16 +289,19 @@ void Farmopolis::on_buysheeppushButton_clicked() {
                 currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/sheep.png) center center no-repeat;");
                 currentground->isfull = 2 ;
                 buyAnimalOrSeed() ;
+                sheepSound.play() ;
             }
         }
         else {
             ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
             ui->coinAndWorkerErrorlabel->show() ;
+            alertSound.play() ;
         }
     }
     else {
         ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
         ui->coinAndWorkerErrorlabel->show() ;
+        alertSound.play() ;
     }
 }
 
@@ -250,16 +313,19 @@ void Farmopolis::on_buycowpushButton_clicked() {
                 currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/cow.png) center center no-repeat;");
                 currentground->isfull = 3 ;
                 buyAnimalOrSeed() ;
+                cowSound.play() ;
             }
         }
         else {
             ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
             ui->coinAndWorkerErrorlabel->show() ;
+            alertSound.play() ;
         }
     }
     else {
         ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
         ui->coinAndWorkerErrorlabel->show() ;
+        alertSound.play() ;
     }
 }
 
@@ -271,16 +337,19 @@ void Farmopolis::on_buywheatpushButton_clicked() {
                 currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/wheat-bag.png) center center no-repeat;");
                 currentground->isfull = 4 ;
                 buyAnimalOrSeed() ;
+                plantingSound.play() ;
             }
         }
         else {
             ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
             ui->coinAndWorkerErrorlabel->show() ;
+            alertSound.play() ;
         }
     }
     else {
         ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
         ui->coinAndWorkerErrorlabel->show() ;
+        alertSound.play() ;
     }
 }
 
@@ -292,16 +361,19 @@ void Farmopolis::on_buybarleypushButton_clicked() {
                 currentground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/barley-bag.png) center center no-repeat;");
                 currentground->isfull = 5 ;
                 buyAnimalOrSeed() ;
+                plantingSound.play() ;
             }
         }
         else {
             ui->coinAndWorkerErrorlabel->setText("You dont have enough coins") ;
             ui->coinAndWorkerErrorlabel->show() ;
+            alertSound.play() ;
         }
     }
     else {
         ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
         ui->coinAndWorkerErrorlabel->show() ;
+        alertSound.play() ;
     }
 }
 
@@ -349,7 +421,6 @@ void Farmopolis::setGameTime() {
             setUserNameLabel() ;
         }
     });
-
 }
 
 void Farmopolis::on_killpushButton_clicked() {
@@ -362,6 +433,7 @@ void Farmopolis::on_killpushButton_clicked() {
     numberFreeWorkers++ ;
     setWorkersLabel(numberFreeWorkers , numberWorkers) ;
     setOperatorLabels() ;
+    killSound.play() ;
 }
 
 void Farmopolis::on_collectpushButton_clicked() {
@@ -373,10 +445,14 @@ void Farmopolis::on_collectpushButton_clicked() {
         currentground->countProduct = 0 ;
         currentground->amoutOfLoss = 0 ;
         setCoinsLabe(coins) ;
+        if(count*price - less > 0) {
+            coinsSound.play() ;
+        }
     }
     else {
         ui->coinAndWorkerErrorlabel->setText("You do not have a free worker") ;
         ui->coinAndWorkerErrorlabel->show() ;
+        alertSound.play() ;
     }
 }
 
@@ -411,16 +487,62 @@ void Farmopolis::setFirstGround() {
     currentground = firstground ;
 }
 
-void Farmopolis::setUserNameLabel() {
-    QSqlQuery q;
-    QString id = QString::number(currentUser) ;
-    q.prepare("SELECT username FROM managers WHERE id = :id");
-    q.bindValue(":id", id);
-    if (q.exec() && q.next()) {
-        QString username = q.value(0).toString();
-        ui->activeuserlabel->setText(": " + username) ;
-    }
+void Farmopolis::setGroundWhenHaveProduct() {
+    timerIsProduct.start(500) ;
+    connect(&timerIsProduct, &QTimer::timeout, [&]() {
+        for (Ground* ground : groundList) {
+            if(ground->isgreen == 1) {
+                if(ground->countProduct >= 1) {
+                    setBackGroundGround(ground, ground->isfull , 1) ;
+                }
+                else {
+                    setBackGroundGround(ground, ground->isfull , 0) ;
+                }
+            }
+        }
+    });
 }
 
+void Farmopolis::setBackGroundGround(Ground *ground, int productNumber, bool flag) {
+    QString originalStyles = ground->styleSheet();
+    if(flag) {
+        switch (productNumber) {
+            case 1 :
+                ground->setStyleSheet(originalStyles + "background: #AACC00 url(:/rec/Icons/farm/hen.png) center center no-repeat;") ;
+                break ;
+            case 2 :
+                ground->setStyleSheet(originalStyles + "background: #AACC00 url(:/rec/Icons/farm/sheep.png) center center no-repeat;") ;
+                break ;
+            case 3 :
+                ground->setStyleSheet(originalStyles + "background: #AACC00 url(:/rec/Icons/farm/cow.png) center center no-repeat;") ;
+                break ;
+            case 4 :
+                ground->setStyleSheet(originalStyles + "background: #AACC00 url(:/rec/Icons/farm/wheat-bag.png) center center no-repeat;") ;
+                break ;
+            case 5 :
+                ground->setStyleSheet(originalStyles + "background: #AACC00 url(:/rec/Icons/farm/barley-bag.png) center center no-repeat;") ;
+                break ;
+        }
+    }
+    else {
+        switch (productNumber) {
+            case 1 :
+                ground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/hen.png) center center no-repeat;") ;
+                break ;
+            case 2 :
+                ground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/sheep.png) center center no-repeat;") ;
+                break ;
+            case 3 :
+                ground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/cow.png) center center no-repeat;") ;
+                break ;
+            case 4 :
+                ground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/wheat-bag.png) center center no-repeat;") ;
+                break ;
+            case 5 :
+                ground->setStyleSheet(originalStyles + "background: #55A630 url(:/rec/Icons/farm/barley-bag.png) center center no-repeat;") ;
+                break ;
+        }
+    }
 
+}
 

@@ -53,5 +53,13 @@
         <file>rec/Icons/farm/barley-bag.png</file>
         <file>rec/Icons/farm/wheat-bag.png</file>
         <file>rec/Icons/farm/trophy.png</file>
+        <file>rec/Music/alert.mp3</file>
+        <file>rec/Music/click.mp3</file>
+        <file>rec/Music/coins.mp3</file>
+        <file>rec/Music/cow.mp3</file>
+        <file>rec/Music/hen.mp3</file>
+        <file>rec/Music/sheep.mp3</file>
+        <file>rec/Music/kill.mp3</file>
+        <file>rec/Music/planting.mp3</file>
     </qresource>
 </RCC>

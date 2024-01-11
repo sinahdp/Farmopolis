@@ -37,6 +37,7 @@
 }
 #groundwidget {
     background-color: #99582A;
+    border-radius: 8px;
 }
 #groundwidget > Ground {
     background-color: #BC6C25;
@@ -63,6 +64,13 @@
 }
 #groundNamelabel {
     image: url(:/rec/Icons/farm/ground.png);
+}
+#soundpushButton {
+    image: url(:/rec/Icons/volume.png);
+    background-color: #FFB703;
+    border-radius: 8px ;
+    max-width: 48px;
+    max-height: 48px;
 }
 #productNamelabe {
     image: url(:/rec/Icons/farm/products.png);

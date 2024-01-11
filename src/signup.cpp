@@ -117,12 +117,12 @@ SignUp::SignUp(QWidget *parent)
 void SignUp::on_hidepasswordpushButton_clicked()
 {
     static int check = 1 ;
-    if(check){
+    if(check) {
         ui->hidepasswordpushButton->setStyleSheet("image: url(:/rec/Icons/view.png);") ;
         ui->passlineEdit->setEchoMode(QLineEdit::Normal) ;
         check = 0 ;
     }
-    else{
+    else {
         ui->hidepasswordpushButton->setStyleSheet("image: url(:/rec/Icons/hidden.png);") ;
         ui->passlineEdit->setEchoMode(QLineEdit::Password) ;
         check = 1 ;
@@ -165,10 +165,10 @@ void SignUp::emptyTheForm()
     ui->selectcountrycomboBox->setCurrentIndex(0);
 }
 
-void SignUp::setFormNumber()
-{
+void SignUp::setFormNumber() {
     ui->titleFormlabel->setText("Manager " + QString::number(lastCompletedForm)) ;
 }
+
 void SignUp::hidelabels()
 {
     ui->userpassErrorlabel->hide() ;
