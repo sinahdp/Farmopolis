@@ -93,7 +93,7 @@ private:
     QMediaPlayer killSound;
     QMediaPlayer plantingSound;
 
-    int remainingTimeGame = 180 ;
+    int remainingTimeGame = 60 ;
     int countremainingTimeGame ;
 
     QTimer timerGame ;
